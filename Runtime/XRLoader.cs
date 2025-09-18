@@ -25,6 +25,12 @@ namespace Google.XR.Cardboard
     using UnityEngine.Rendering;
     using UnityEngine.XR;
     using UnityEngine.XR.Management;
+    using Google.XR.Cardboard.Internal;
+
+#if UNITY_EDITOR
+    using UnityEditor;
+#endif
+
 
     /// <summary>
     /// XR Loader for Cardboard XR Plugin.
@@ -43,6 +49,8 @@ namespace Google.XR.Cardboard
         private static Texture2D _gearTexture;
 
         private static Texture2D _whiteLineTexture;
+
+        private XRSettings settings;
 
         /// <summary>
         /// Pairs the native enum to set the graphics API being used.
@@ -94,11 +102,12 @@ namespace Google.XR.Cardboard
         /// <returns>Whether or not initialization succeeded.</returns>
         public override bool Initialize()
         {
+
+
+
             CardboardSDKInitialize();
-            CreateSubsystem<XRDisplaySubsystemDescriptor, XRDisplaySubsystem>(
-                _displaySubsystemDescriptors, "CardboardDisplay");
-            CreateSubsystem<XRInputSubsystemDescriptor, XRInputSubsystem>(
-                _inputSubsystemDescriptors, "CardboardInput");
+            CreateSubsystem<XRDisplaySubsystemDescriptor, XRDisplaySubsystem>(_displaySubsystemDescriptors, "CardboardDisplay");
+            CreateSubsystem<XRInputSubsystemDescriptor, XRInputSubsystem>(_inputSubsystemDescriptors, "CardboardInput");
             _isInitialized = true;
             return true;
         }
@@ -263,6 +272,9 @@ namespace Google.XR.Cardboard
 #if UNITY_ANDROID
         [DllImport(ApiConstants.CardboardApi)]
         private static extern void CardboardUnity_initializeAndroid(IntPtr context);
+
+        [DllImport(ApiConstants.CardboardApi)]
+        private static extern void CardboardUnity_setRenderParams(float scale, float sharpening);
 #endif
 
         /// <summary>
@@ -280,6 +292,11 @@ namespace Google.XR.Cardboard
 
             // Initializes Cardboard SDK.
             CardboardUnity_initializeAndroid(activity.GetRawObject());
+
+            // Use baked constants (these are exactly what you set in the UI at build time)
+            CardboardUnity_setRenderParams(BakedXRSettings.EyeInternalScale, BakedXRSettings.SharpeningValue);
+            Debug.Log($"[Cardboard] Using XRSettings from build: scale={BakedXRSettings.EyeInternalScale}, sharpen={BakedXRSettings.SharpeningValue}");
+
 #endif
 
             _closeTexture = Resources.Load<Texture2D>("Cardboard/quantum_ic_close_white_24");
