@@ -1,3 +1,12 @@
+Avantis Custom Google Cardboard XR Plugin for Unity
+===================================================
+This branch, "develop", holds the code for Avantis' modified Cardboard XR Plugin.
+
+For the upstream/original cardboard code, see the "master" branch.
+
+Original Readme:
+================
+
 > [!IMPORTANT]
 > Do not file issues here. Please file issues at the [Cardboard SDK repository](https://github.com/googlevr/cardboard/issue) to report any bugs, ask questions or request specific features.
 

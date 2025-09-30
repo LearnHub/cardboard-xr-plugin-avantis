@@ -11,14 +11,15 @@ namespace Google.XR.Cardboard
     [System.Serializable]
     public class XRSettings : ScriptableObject
     {
-        [TextArea(3, 19)]
+        [TextArea(3, 21)]
         [Tooltip("Resolution Settings")]
         public string description = "Single Stereo Pass Support:\n" +
         "- Requires OpenGLES 3.x Renderer (Vulkan is not supported)\n" +
         "- Works with Unity's Universal Render Pipeline Shaders\n" +
         "- Works with Unity's Built-in Render Pipeline Shaders\n" +
-        "- Can work with Shader Graph shaders, but they need to be coded with Multiview extension support\n\n" +
-        "Resolution Preset: Recommended value is Quality/Balanced. (Above, the fragment cost and fillrate is exponentially higher for dimminishing returns.)\n" +
+        "- Universal Render Pipeline (URP)Shader Graph shaders are supported automatically.\n" +
+        "- For Built-in Render Pipeline, Shader Graph shader need to be coded with Multiview extension support\n\n" +
+        "Resolution Preset: Recommended value is Balanced. (Above, the fragment cost and fillrate is exponentially higher for dimminishing returns.)\n" +
         "Available Presets:\n" +
         "- Full - 100% Resolution\n" +
         "- Quality - 66% Resolution\n" +
@@ -28,6 +29,18 @@ namespace Google.XR.Cardboard
         "- Manual - Allows Custom Resolution Scale\n\n" +
         "Sharpenning:\n" +
         "- The optimal sharpenning value is defined for each preset. It can also be manually modified.";
+
+       
+        public enum RenderingPreset 
+        {
+            SinglePass = 1,
+            MultiPass = 0
+        }
+
+        [Tooltip("Rendering Method")]
+        public RenderingPreset renderingMode = RenderingPreset.SinglePass;
+        [HideInInspector]
+        public bool isSPI = false;
 
         public enum ResolutionPreset
         {
@@ -40,15 +53,14 @@ namespace Google.XR.Cardboard
         }
 
         [Tooltip("Resolution Scale Preset")]
-        public ResolutionPreset resolutionPreset = ResolutionPreset.Quality;
+        public ResolutionPreset resolutionPreset = ResolutionPreset.Balanced;
         [HideInInspector]
-        public float resolutionScale = 66;
-        //public float resolutionScale => (float)resolutionPreset;
+        public float resolutionScale = 58;
 
         [Range(10, 100)]
         [Tooltip("Custom Resolution Scale.")]
         [HideInInspector]
-        public float customResolutionScale = 66;
+        public float customResolutionScale = 58;
 
 
         [HideInInspector]
@@ -60,6 +72,8 @@ namespace Google.XR.Cardboard
 
         private void OnValidate()
         {
+            isSPI = (renderingMode == RenderingPreset.SinglePass);
+
             customResolutionScale = Mathf.Round(customResolutionScale);
 
             resolutionScale = resolutionPreset == ResolutionPreset.Manual
@@ -94,6 +108,7 @@ public class XRSettingsEditor : Editor
         so.Update();
 
         EditorGUILayout.PropertyField(so.FindProperty("description"));
+        EditorGUILayout.PropertyField(so.FindProperty("renderingMode"));
         EditorGUILayout.PropertyField(so.FindProperty("resolutionPreset"));
 
         if (settings.resolutionPreset == Google.XR.Cardboard.XRSettings.ResolutionPreset.Manual)

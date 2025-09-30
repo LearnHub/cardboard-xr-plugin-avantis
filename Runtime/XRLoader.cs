@@ -274,7 +274,7 @@ namespace Google.XR.Cardboard
         private static extern void CardboardUnity_initializeAndroid(IntPtr context);
 
         [DllImport(ApiConstants.CardboardApi)]
-        private static extern void CardboardUnity_setRenderParams(float scale, float sharpening);
+        private static extern void CardboardUnity_setRenderParams(bool isSpi, float scale, float sharpening);
 #endif
 
         /// <summary>
@@ -294,8 +294,8 @@ namespace Google.XR.Cardboard
             CardboardUnity_initializeAndroid(activity.GetRawObject());
 
             // Use baked constants (these are exactly what you set in the UI at build time)
-            CardboardUnity_setRenderParams(BakedXRSettings.EyeInternalScale, BakedXRSettings.SharpeningValue);
-            Debug.Log($"[Cardboard] Using XRSettings from build: scale={BakedXRSettings.EyeInternalScale}, sharpen={BakedXRSettings.SharpeningValue}");
+            CardboardUnity_setRenderParams(BakedXRSettings.SPI, BakedXRSettings.EyeInternalScale, BakedXRSettings.SharpeningValue);
+            Debug.Log($"[Cardboard] Using XRSettings from build: Single-Pass-Instance={BakedXRSettings.SPI}, scale={BakedXRSettings.EyeInternalScale}, sharpen={BakedXRSettings.SharpeningValue}");
 
 #endif
 
