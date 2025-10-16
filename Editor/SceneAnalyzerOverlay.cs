@@ -17,7 +17,7 @@ using UnityEngine.Rendering;
 [InitializeOnLoad]
 public static class SceneAnalyzerOverlay
 {
-	public static bool OverlayEnabled = true;
+	public static bool OverlayEnabled = false;
 
 	static SceneAnalyzerOverlay()
 	{
