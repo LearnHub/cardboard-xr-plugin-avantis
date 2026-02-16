@@ -9,6 +9,18 @@ For the upstream/original cardboard code, see the "master" branch.
 This project relies on this native Cardboard SDK [as an AAR file](Runtime/Android/GfxPluginCardboard.aar).
 This AAR is created from the [`develop` branch of this fork](https://github.com/LearnHub/cardboard-sdk-avantis).
 
+### Updating the AAR
+
+When the native SDK is changed, the AAR must be manually rebuilt and copied here:
+
+```bash
+cd cardboard-sdk-avantis
+./gradlew :sdk:clean :sdk:assembleRelease
+cp sdk/build/outputs/aar/GfxPluginCardboard.aar ../cardboard-xr-plugin-avantis/Runtime/Android/
+```
+
+Then commit the updated AAR to this repo and bump the version in `package.json`.
+
 Original Readme:
 ================
 
