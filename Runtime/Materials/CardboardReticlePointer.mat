@@ -8,8 +8,11 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: CardboardReticlePointer
-  m_Shader: {fileID: 4800000, guid: 95af80d353d0c4a43b9f43572170861f, type: 3}
-  m_ShaderKeywords: 
+  m_Shader: {fileID: 4800000, guid: 1e993377d5fe4c84687ffdd02921eae5, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
   m_LightmapFlags: 5
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
