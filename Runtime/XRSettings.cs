@@ -3,7 +3,6 @@ using UnityEngine;
 using UnityEngine.XR.Management;
 using static Google.XR.Cardboard.XRSettings;
 using static UnityEngine.GraphicsBuffer;
-using UnityEditor;
 
 namespace Google.XR.Cardboard
 {
@@ -30,8 +29,8 @@ namespace Google.XR.Cardboard
         "Sharpenning:\n" +
         "- The optimal sharpenning value is defined for each preset. It can also be manually modified.";
 
-       
-        public enum RenderingPreset 
+
+        public enum RenderingPreset
         {
             SinglePass = 1,
             MultiPass = 0
