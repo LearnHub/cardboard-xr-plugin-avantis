@@ -5,6 +5,7 @@ using System.IO;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
+using System.Globalization;
 
 namespace Google.XR.Cardboard.Editor
 {
@@ -43,8 +44,8 @@ namespace Google.XR.Cardboard.Editor
     internal static class BakedXRSettings
     {{
         public const bool SPI = {(isSPI ? "true" : "false")};
-        public const float EyeInternalScale = {scale/100}f;
-        public const float SharpeningValue  = {sharpen}f;
+        public const float EyeInternalScale = {(scale/100f).ToString(CultureInfo.InvariantCulture)}f;
+        public const float SharpeningValue  = {sharpen.ToString(CultureInfo.InvariantCulture)}f;
     }}
 }}";
 
