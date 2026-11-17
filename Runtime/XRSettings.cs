@@ -69,6 +69,13 @@ namespace Google.XR.Cardboard
         [Tooltip("Post-process sharpening strength: 0.0 - 1.0")]
         public float sharpeningValue = 0.25f;
 
+        [Tooltip("Keeps head movement smooth at the display's refresh rate when the app renders " +
+            "more slowly, by redrawing the last frame for the head's newest position on every " +
+            "refresh. OpenGL ES 3 on Android only. Uses three sets of eye textures instead of " +
+            "one. A device can override this with its CLASSVR_CARDBOARD_REPROJECTION system " +
+            "setting (1 on, 0 off).")]
+        public bool reprojection = false;
+
         private void OnValidate()
         {
             isSPI = (renderingMode == RenderingPreset.SinglePass);
@@ -116,6 +123,7 @@ public class XRSettingsEditor : Editor
         }
 
         EditorGUILayout.PropertyField(so.FindProperty("sharpeningValue"));
+        EditorGUILayout.PropertyField(so.FindProperty("reprojection"));
 
         so.ApplyModifiedProperties();
     }

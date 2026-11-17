@@ -275,6 +275,9 @@ namespace Google.XR.Cardboard
 
         [DllImport(ApiConstants.CardboardApi)]
         private static extern void CardboardUnity_setRenderParams(bool isSpi, float scale, float sharpening);
+
+        [DllImport(ApiConstants.CardboardApi)]
+        private static extern void CardboardUnity_setReprojection(bool enabled);
 #endif
 
         /// <summary>
@@ -290,12 +293,16 @@ namespace Google.XR.Cardboard
             var activity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity");
             var context = activity.Call<AndroidJavaObject>("getApplicationContext");
 
+            // AVN: Whether the project asks for reprojection. Set before the SDK is initialized,
+            // which is when the device's own setting is read and may override it.
+            CardboardUnity_setReprojection(BakedXRSettings.Reprojection);
+
             // Initializes Cardboard SDK.
             CardboardUnity_initializeAndroid(activity.GetRawObject());
 
             // Use baked constants (these are exactly what you set in the UI at build time)
             CardboardUnity_setRenderParams(BakedXRSettings.SPI, BakedXRSettings.EyeInternalScale, BakedXRSettings.SharpeningValue);
-            Debug.Log($"[Cardboard] Using XRSettings from build: Single-Pass-Instance={BakedXRSettings.SPI}, scale={BakedXRSettings.EyeInternalScale}, sharpen={BakedXRSettings.SharpeningValue}");
+            Debug.Log($"[Cardboard] Using XRSettings from build: Single-Pass-Instance={BakedXRSettings.SPI}, scale={BakedXRSettings.EyeInternalScale}, sharpen={BakedXRSettings.SharpeningValue}, reprojection={BakedXRSettings.Reprojection}");
 
 #endif
 

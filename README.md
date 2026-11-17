@@ -24,6 +24,50 @@ repository is checked out elsewhere, add `-PunityPluginDir=<path to this reposit
 
 Then commit the updated AAR to this repo and bump the version in `package.json`.
 
+## Reprojection
+
+Without reprojection the display shows a new picture only when Unity finishes a frame, so an app
+that renders more slowly than the display refreshes judders whenever the head turns. With it, the
+plug-in redraws the last finished frame on every refresh, turned to where the head is by then, so
+head movement stays smooth at the display's rate (72 Hz on a ClassVR headset) whatever rate the
+app manages.
+
+It is off by default and is chosen once, when the app starts:
+
+- **In the Unity project:** tick *Reprojection* in the Cardboard XR Plugin settings (Project
+  Settings, XR Plug-in Management, Cardboard XR Plugin). The setting is baked into the build.
+- **On a device:** the system setting `CLASSVR_CARDBOARD_REPROJECTION` overrides the build: `1`
+  turns it on and `0` turns it off. Remove the setting to go back to what the build asks for.
+  The app must be restarted for a change to take effect.
+
+  ```bash
+  adb shell settings put system CLASSVR_CARDBOARD_REPROJECTION 1
+  adb shell settings delete system CLASSVR_CARDBOARD_REPROJECTION
+  ```
+
+What to expect:
+
+- **OpenGL ES 3 on Android only.** Under Vulkan the setting does nothing. Single-pass and
+  multi-pass rendering both work.
+- **Only head rotation is corrected.** Things that move in the scene, and the camera rig when the
+  app turns or moves it, still update at the app's own frame rate. Anything fixed to the head,
+  such as a reticle or a heads-up display, will shake a little when the app drops frames.
+- **Black at the edges.** When the head turns quickly and the app is slow, the edge of the picture
+  that has not been rendered yet shows black until the next frame arrives.
+- **Cost.** About 105 MB more graphics memory (a second full-screen surface, and three sets of
+  eye textures instead of one), and a GPU-bound app renders roughly 10 to 15% fewer frames,
+  because the display is now redrawn 72 times a second however slow the app is. Measured on a
+  CVR355128 at the Balanced (58%) resolution.
+
+The picture is drawn on a second surface laid over Unity's own while VR is running, by a thread in
+the native SDK; see `sdk/unity/android/reprojection.h` in the native SDK for how it works. If that
+surface cannot be set up, the plug-in presents through Unity as it does with reprojection off.
+
+To check the geometry on a headset lying still, set `debug.avn.reprojection.test` before starting
+the app: `1` replaces the head tracker with a head that sways and reprojects it away, so the
+picture should stand still; `2` shows the same sway without the correction. Set it back to `0`
+afterwards.
+
 Original Readme:
 ================
 
