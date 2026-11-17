@@ -52,8 +52,9 @@ What to expect:
 - **Only head rotation is corrected.** Things that move in the scene, and the camera rig when the
   app turns or moves it, still update at the app's own frame rate. Anything fixed to the head,
   such as a reticle or a heads-up display, will shake a little when the app drops frames.
-- **Black at the edges.** When the head turns quickly and the app is slow, the edge of the picture
-  that has not been rendered yet shows black until the next frame arrives.
+- **Soft edges.** When the head turns quickly and the app is slow, the part of the view that has
+  not been rendered yet is filled by carrying the edge of the picture outwards and fading it to
+  black, until the next frame arrives.
 - **Cost.** About 105 MB more graphics memory (a second full-screen surface, and three sets of
   eye textures instead of one), and a GPU-bound app renders roughly 10 to 15% fewer frames,
   because the display is now redrawn 72 times a second however slow the app is. Measured on a
