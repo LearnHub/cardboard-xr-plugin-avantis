@@ -11,13 +11,16 @@ This AAR is created from the [`develop` branch of this fork](https://github.com/
 
 ### Updating the AAR
 
-When the native SDK is changed, the AAR must be manually rebuilt and copied here:
+When the native SDK is changed, the AAR must be rebuilt and copied here. With both repositories
+checked out side by side:
 
 ```bash
 cd cardboard-sdk-avantis
-./gradlew :sdk:clean :sdk:assembleRelease
-cp sdk/build/outputs/aar/GfxPluginCardboard.aar ../cardboard-xr-plugin-avantis/Runtime/Android/
+./gradlew :sdk:clean :sdk:copyAarToUnityPlugin
 ```
+
+This builds the release AAR and copies it to `Runtime/Android/GfxPluginCardboard.aar`. If this
+repository is checked out elsewhere, add `-PunityPluginDir=<path to this repository>`.
 
 Then commit the updated AAR to this repo and bump the version in `package.json`.
 
