@@ -28,14 +28,14 @@ Original Readme:
 ================
 
 > [!IMPORTANT]
-> Do not file issues here. Please file issues at the [Cardboard SDK repository](https://github.com/googlevr/cardboard/issue) to report any bugs, ask questions or request specific features.
+> Do not file issues here. Please file issues at the [Cardboard SDK repository](https://github.com/googlevr/cardboard/issues) to report any bugs, ask questions or request specific features.
 
 Google Cardboard XR Plugin for Unity
 ====================================
 Copyright 2020 Google LLC
 
 This SDK provides everything you need to create your own Virtual Reality (VR)
-experiences for Google Cardboard in Unity 2019.4.25f1 or later. It supports
+experiences for Google Cardboard in Unity 6000.0.58f2 or later. It supports
 essential VR features, such as:
 
  * Motion tracking
