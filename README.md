@@ -52,7 +52,8 @@ What to expect:
 - **Only head rotation is corrected.** Things that move in the scene, and the camera rig when the
   app turns or moves it, still update at the app's own frame rate. Anything drawn in the scene
   to stay fixed to the head, such as a reticle or a heads-up display, will shake when the app
-  drops frames. For a reticle, use the head-locked layer described below.
+  drops frames. For a reticle, use the head-locked layer described below. The plug-in's own
+  tilt-to-spin turn (see below) is corrected, as a turn of the head is.
 - **Soft edges.** When the head turns quickly and the app is slow, the part of the view that has
   not been rendered yet is filled by carrying the edge of the picture outwards and fading it to
   black, until the next frame arrives.
@@ -100,6 +101,42 @@ To check the geometry on a headset lying still, set `debug.avn.reprojection.test
 the app: `1` replaces the head tracker with a head that sways and reprojects it away, so the
 picture should stand still; `2` shows the same sway without the correction. Set it back to `0`
 afterwards.
+
+## Tilt-to-spin
+
+Tilting the head towards a shoulder turns the viewer about the vertical, for someone who cannot
+turn round where they sit. The plug-in does the turning itself and adds it to the head pose it
+reports, so the camera turns with no rig or script in the app. The turn is faster the further the
+head is tilted and slower when looking up or down.
+
+It is done in the plug-in because of reprojection. A turn that the app applies to a camera rig
+moves on only with each of the app's frames, so the world steps round whenever the app renders
+more slowly than the display refreshes. The plug-in's turn moves on at every refresh and is
+reprojected as a turn of the head is, so it stays smooth. Without reprojection it moves at the
+app's rate, as a rig would. Android only.
+
+It is on by default:
+
+- **In the Unity project:** untick *Tilt To Spin* in the Cardboard XR Plugin settings to build an
+  app without it.
+- **While the app runs:** `Google.XR.Cardboard.TiltToSpin` switches it and sets how it feels.
+
+```csharp
+TiltToSpin.Disable();            // stop turning; the viewer stays turned as they are
+TiltToSpin.Enable();             // 14.3 degree dead zone, 229 degrees a second top speed
+TiltToSpin.Enable(11.5f, 229f);  // or with a dead zone and top speed of the app's choosing
+TiltToSpin.Reset();              // face the way the head tracker says again
+float turned = TiltToSpin.YawDegrees;
+```
+
+- **An app that already turns the viewer from the head's tilt** must switch one of the two off,
+  or the viewer turns twice. `TiltToSpin.IsAvailable` says whether the plug-in can do it.
+- **The turn is part of the head pose.** The camera's local rotation includes it, and so does its
+  position, which swings round the neck as it does for a real turn. The camera rig is not moved.
+- **`Api.Recenter()` undoes the turn** as well as recentring the head tracker.
+- **The top speed is not reached in practice:** the speed is the top speed times how far the
+  sine of the tilt is past the dead zone, times a factor that falls to nothing looking straight
+  up or down.
 
 Original Readme:
 ================
