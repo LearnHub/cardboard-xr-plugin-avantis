@@ -50,8 +50,9 @@ What to expect:
 - **OpenGL ES 3 on Android only.** Under Vulkan the setting does nothing. Single-pass and
   multi-pass rendering both work.
 - **Only head rotation is corrected.** Things that move in the scene, and the camera rig when the
-  app turns or moves it, still update at the app's own frame rate. Anything fixed to the head,
-  such as a reticle or a heads-up display, will shake a little when the app drops frames.
+  app turns or moves it, still update at the app's own frame rate. Anything drawn in the scene
+  to stay fixed to the head, such as a reticle or a heads-up display, will shake when the app
+  drops frames. For a reticle, use the head-locked layer described below.
 - **Soft edges.** When the head turns quickly and the app is slow, the part of the view that has
   not been rendered yet is filled by carrying the edge of the picture outwards and fading it to
   black, until the next frame arrives.
@@ -63,6 +64,37 @@ What to expect:
 The picture is drawn on a second surface laid over Unity's own while VR is running, by a thread in
 the native SDK; see `sdk/unity/android/reprojection.h` in the native SDK for how it works. If that
 surface cannot be set up, the plug-in presents through Unity as it does with reprojection off.
+
+### Head-locked layer (reticle)
+
+`Google.XR.Cardboard.HeadLockedLayer` draws one flat picture fixed to the head: a rectangle
+straight ahead of the point midway between the eyes. The plug-in draws it after the picture has
+been turned for the head, on every refresh, so it stays in the middle of the view however slowly
+the app renders. Each eye sees it from where that eye is, so it appears at the distance given.
+
+```csharp
+if (HeadLockedLayer.IsAvailable)
+{
+    // Every frame the reticle should show: texture, metres ahead, size in metres, tint
+    HeadLockedLayer.Show(reticleTexture, hitDistance, new Vector2(0.06f, 0.06f), Color.white);
+}
+else
+{
+    // Reprojection is not drawing the display: draw the reticle in the scene as before
+}
+```
+
+- **Check `IsAvailable` every frame.** It is true only while reprojection is drawing the display,
+  and can change while the app runs. When it is false the layer is not shown at all.
+- **Call `Show` every frame.** The layer goes by itself a few frames after the last call, and
+  `Hide` takes it away at once. A change of distance, size or tint needs no new texture.
+- **A picture that changes** should be drawn into a different texture each time (two or three
+  taken in turn), not over the one being shown. Pass `premultipliedAlpha: true` for a
+  RenderTexture that a camera has drawn over transparent black.
+- **It is drawn over everything.** Nothing in the scene can hide it, and it is not part of the
+  ClassView picture.
+- **The distance** is in metres of the head's own space: divide a distance in the scene by the
+  scale of the camera rig.
 
 To check the geometry on a headset lying still, set `debug.avn.reprojection.test` before starting
 the app: `1` replaces the head tracker with a head that sways and reprojects it away, so the
