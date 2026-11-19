@@ -19,14 +19,14 @@ namespace Google.XR.Cardboard.Editor
             if (!EditorBuildSettings.TryGetConfigObject("Google.XR.Cardboard.XRSettings", out XRSettings s) || s == null)
             {
                 // Safe defaults if not configured
-                WriteBakedClass(false, 0.5f, 0.24f, false);
+                WriteBakedClass(false, 0.5f, 0.24f, false, true);
                 return;
             }
 
-            WriteBakedClass(s.isSPI, s.resolutionScale, s.sharpeningValue, s.reprojection);
+            WriteBakedClass(s.isSPI, s.resolutionScale, s.sharpeningValue, s.reprojection, s.tiltToSpin);
         }
 
-        private static void WriteBakedClass(bool isSPI, float scale, float sharpen, bool reprojection)
+        private static void WriteBakedClass(bool isSPI, float scale, float sharpen, bool reprojection, bool tiltToSpin)
         {
             // Find the existing runtime file
             string[] guids = AssetDatabase.FindAssets("BakedXRSettings t:Script");
@@ -47,6 +47,7 @@ namespace Google.XR.Cardboard.Editor
         public const float EyeInternalScale = {(scale/100f).ToString(CultureInfo.InvariantCulture)}f;
         public const float SharpeningValue  = {sharpen.ToString(CultureInfo.InvariantCulture)}f;
         public const bool Reprojection = {(reprojection ? "true" : "false")};
+        public const bool TiltToSpin = {(tiltToSpin ? "true" : "false")};
     }}
 }}";
 

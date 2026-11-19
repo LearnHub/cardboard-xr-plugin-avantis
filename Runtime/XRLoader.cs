@@ -302,7 +302,18 @@ namespace Google.XR.Cardboard
 
             // Use baked constants (these are exactly what you set in the UI at build time)
             CardboardUnity_setRenderParams(BakedXRSettings.SPI, BakedXRSettings.EyeInternalScale, BakedXRSettings.SharpeningValue);
-            Debug.Log($"[Cardboard] Using XRSettings from build: Single-Pass-Instance={BakedXRSettings.SPI}, scale={BakedXRSettings.EyeInternalScale}, sharpen={BakedXRSettings.SharpeningValue}, reprojection={BakedXRSettings.Reprojection}");
+            // AVN: Tilt-to-spin is on unless the project says otherwise. The app can still
+            // switch it either way afterwards.
+            if (BakedXRSettings.TiltToSpin)
+            {
+                TiltToSpin.Enable();
+            }
+            else
+            {
+                TiltToSpin.Disable();
+            }
+
+            Debug.Log($"[Cardboard] Using XRSettings from build: Single-Pass-Instance={BakedXRSettings.SPI}, scale={BakedXRSettings.EyeInternalScale}, sharpen={BakedXRSettings.SharpeningValue}, reprojection={BakedXRSettings.Reprojection}, tiltToSpin={BakedXRSettings.TiltToSpin}");
 
 #endif
 

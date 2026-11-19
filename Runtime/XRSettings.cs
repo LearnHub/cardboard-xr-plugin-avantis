@@ -76,6 +76,14 @@ namespace Google.XR.Cardboard
             "setting (1 on, 0 off).")]
         public bool reprojection = false;
 
+        [Tooltip("Tilting the head towards a shoulder turns the viewer, for someone who cannot " +
+            "turn round where they sit. The plug-in adds the turn to the head pose, so no rig or " +
+            "script is needed, and with reprojection it stays smooth however slowly the app " +
+            "renders. Android only. Switch it off if the app turns the viewer from the head's " +
+            "tilt itself, or they will turn twice. It can also be switched at run time with " +
+            "Google.XR.Cardboard.TiltToSpin.")]
+        public bool tiltToSpin = true;
+
         private void OnValidate()
         {
             isSPI = (renderingMode == RenderingPreset.SinglePass);
@@ -124,6 +132,7 @@ public class XRSettingsEditor : Editor
 
         EditorGUILayout.PropertyField(so.FindProperty("sharpeningValue"));
         EditorGUILayout.PropertyField(so.FindProperty("reprojection"));
+        EditorGUILayout.PropertyField(so.FindProperty("tiltToSpin"));
 
         so.ApplyModifiedProperties();
     }

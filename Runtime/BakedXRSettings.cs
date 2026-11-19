@@ -7,5 +7,6 @@ namespace Google.XR.Cardboard.Internal
         public const float EyeInternalScale = 0.58f;
         public const float SharpeningValue  = 0.25f;
         public const bool Reprojection = false;
+        public const bool TiltToSpin = true;
     }
 }
